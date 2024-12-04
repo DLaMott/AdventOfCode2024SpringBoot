@@ -11,9 +11,7 @@ import java.io.IOException;
 @RequestMapping(value = "/2024/")
 public interface AdventOfCode {
 
-    @GetMapping(value = {"/day/{day}"}, produces = {"application/json"})
-    ResponseEntity<Day> adventOfCode(@PathVariable(value = "day") Integer day) throws IOException, InterruptedException;
-
-
+    @GetMapping(value = {"/day/{day}/part/{part}"}, produces = {"application/json"})
+    ResponseEntity<Day> adventOfCode(@PathVariable(value = "day") Integer day,@PathVariable(value = "part") Integer part) throws IOException, InterruptedException;
 
 }

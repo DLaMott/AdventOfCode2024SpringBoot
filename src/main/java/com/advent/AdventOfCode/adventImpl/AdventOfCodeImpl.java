@@ -16,13 +16,13 @@ public class AdventOfCodeImpl implements AdventOfCode{
     private DayProcess dayProcess;
 
     @Override
-    public ResponseEntity<Day> adventOfCode(Integer day) throws IOException, InterruptedException {
-        if (day < 1 || day > 31) {
+    public ResponseEntity<Day> adventOfCode(Integer day, Integer part) throws IOException, InterruptedException {
+        if (day < 1 || day > 25) {
             return ResponseEntity.badRequest()
                     .body(new Day("Invalid day", "Day must be between 1 and 31", "No solution"));
         }
 
-        return dayProcess.solveDay(day);
+        return dayProcess.solveDayPart(day, part);
 
     }
 }
