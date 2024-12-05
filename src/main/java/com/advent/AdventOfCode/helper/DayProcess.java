@@ -2,9 +2,13 @@ package com.advent.AdventOfCode.helper;
 
 
 
+import com.advent.AdventOfCode.AdventOfCodeApplication;
 import org.apache.commons.lang3.tuple.Pair;
 import com.advent.AdventOfCode.model.Day;
 import com.advent.AdventOfCode.util.Scraper;
+import org.apache.coyote.http11.filters.SavedRequestInputFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -20,6 +25,8 @@ public class DayProcess {
 
     @Autowired
     private Scraper scraper;
+
+    private static Logger logger = LoggerFactory.getLogger(DayProcess.class);
 
     // Mapping days to their solution logic
     private final Map<Pair<Integer, Integer>, Function<Pair<Integer, Integer>, Day>> solvers = new HashMap<>();
@@ -162,6 +169,153 @@ public class DayProcess {
             return new Day("Error fetching Day 2", e.getMessage(), "N/A");
         }
     }
+
+
+    /**
+     *
+     *90 91 93 96 93
+     *3 5 7 10 11 11
+     *35 37 39 42 46
+     *
+     * return a sum of safe lists
+     * any two adjacent levels can differ by one or three
+     * list can either always increase or decrease
+     * @param day
+     * @param part
+     * @return
+     */
+    private Day solveDay2Part1(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+
+            List<int[]> lists = Arrays.stream(puzzleInput.split("\n"))
+                    .map(list -> Arrays.stream(list.split(" "))
+                    .mapToInt(Integer::parseInt).toArray())
+                    .toList();
+
+            int sum = 0;
+
+            for (int[] reports : lists) {
+                boolean isSafe = true;
+
+                boolean isIncreasing = reports[1] > reports[0];
+
+                for (int x = 1; x < reports.length; x++) {
+                    int diff = reports[x] - reports[x - 1];
+
+                    if (Math.abs(diff) < 1 || Math.abs(diff) > 3) {
+                        isSafe = false;
+                        break;
+                    }
+
+                    if (isIncreasing && diff < 0 || !isIncreasing && diff > 0) {
+                        isSafe = false;
+                        break;
+                    }
+                }
+                if (isSafe) {
+                    sum++;
+                }
+            }
+
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 2", e.getMessage(), "N/A");
+        }
+    }
+
+    /**
+     *
+     *90 91 93 96 93
+     *3 5 7 10 11 11
+     *35 37 39 42 46
+     *
+     * return a sum of safe lists
+     * any two adjacent levels can differ by one or three
+     * list can either always increase or decrease
+     * @param day
+     * @param part
+     * @return
+     */
+    private Day solveDay2Part2(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+
+            List<int[]> lists = Arrays.stream(puzzleInput.split("\n"))
+                    .map(line -> Arrays.stream(line.split(" "))
+                            .mapToInt(Integer::parseInt)
+                            .toArray())
+                    .toList();
+
+            int safeCount = 0;
+
+            for (int[] reports : lists) {
+                if (isSafe(reports)) {
+
+                    safeCount++;
+
+                } else {
+
+                    boolean dampenerWorks = false;
+                    for (int i = 0; i < reports.length; i++) {
+
+                        int[] modifiedReports = removeIndex(reports, i);
+
+                        if (isSafe(modifiedReports)) {
+                            dampenerWorks = true;
+                            break;
+                        }
+                    }
+                    if (dampenerWorks) {
+                        safeCount++;
+                    }
+                }
+            }
+            return new Day(puzzleText, puzzleInput, String.valueOf(safeCount));
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 2", e.getMessage(), "N/A");
+        }
+    }
+
+    /**
+     * Accepts reports
+     * @param reports elf reports?
+     * @return if report is safe
+     */
+    private boolean isSafe(int[] reports) {
+
+        boolean isIncreasing = reports[1] > reports[0];
+
+        for (int x = 1; x < reports.length; x++) {
+            int diff = reports[x] - reports[x - 1];
+            if (Math.abs(diff) < 1 || Math.abs(diff) > 3) {
+                return false;
+            }
+            if (isIncreasing && diff < 0 || !isIncreasing && diff > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Removes an item from an array by an index.
+     * @param array the report
+     * @param index the index
+     * @return an array without the specified index
+     */
+    private int[] removeIndex(int[] array, int index) {
+        int[] result = new int[array.length - 1];
+        for (int i = 0, j = 0; i < array.length; i++) {
+            if (i != index) {
+                result[j++] = array[i];
+            }
+        }
+        return result;
+    }
+
 
     private Day solveGenericDayPart(Integer day, Integer part) {
         return new Day("Generic Puzzle Text for Day " + day + ", Part " + part,
