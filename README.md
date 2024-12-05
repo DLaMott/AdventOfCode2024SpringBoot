@@ -1,4 +1,4 @@
-## Advent of Code 2024 Spring Boot
+## Advent of Code Spring Boot
 
 Yeah I got bored and decided to try and tackle this years advent of code with a springboot rest api.
 
