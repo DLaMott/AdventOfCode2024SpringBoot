@@ -47,7 +47,6 @@ public class DayProcess {
                 }
             };
         } catch (NoSuchMethodException e) {
-            // Use a lambda to call solveGenericDayPart with the Pair values
             return dayPart -> solveGenericDayPart(dayPart.getLeft(), dayPart.getRight());
         }
     }
@@ -124,8 +123,6 @@ public class DayProcess {
                     .sorted()
                     .toArray();
 
-            //store each in their own map with freq. Then mult the amount
-
             Map<Integer, Integer> left = new HashMap<>();
             Map<Integer,Integer> right = new HashMap<>();
 
@@ -143,7 +140,6 @@ public class DayProcess {
 
             int sum = 0;
 
-            // iterate through both map to see how often left is in the right
             for(Map.Entry<Integer, Integer> map: left.entrySet()){
                 if (right.containsKey(map.getKey())){
                     sum += map.getKey() * right.get(map.getKey());
@@ -302,6 +298,26 @@ public class DayProcess {
             }
         }
         return result;
+    }
+
+    public Day solveDay3Part1(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+            return new Day(puzzleText, puzzleInput, "");
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 2", e.getMessage(), "N/A");
+        }
+    }
+
+    public Day solveDay3Part2(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+            return new Day(puzzleText, puzzleInput,"");
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 2", e.getMessage(), "N/A");
+        }
     }
 
     private Day solveGenericDayPart(Integer day, Integer part) {

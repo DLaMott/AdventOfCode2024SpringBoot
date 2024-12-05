@@ -84,4 +84,34 @@ public class DayProcessTest {
         Day day = dayProcess.solveDay2Part2(2,2);
         assertEquals( "4", day.getAnswer());
     }
+
+    @Test
+    void Day3Part1Test() throws IOException, InterruptedException {
+
+        when(scraper.fetchPuzzleDescription(3)).thenReturn("This is the puzzle description");
+        when(scraper.fetchPuzzleInput(3)).thenReturn("7 6 4 2 1\n" +
+                "1 2 7 8 9\n" +
+                "9 7 6 2 1\n" +
+                "1 3 2 4 5\n" +
+                "8 6 4 4 1\n" +
+                "1 3 6 7 9");
+
+        Day day = dayProcess.solveDay2Part2(2,2);
+        assertEquals( "4", day.getAnswer());
+    }
+
+    @Test
+    void Day3Part2Test() throws IOException, InterruptedException {
+
+        when(scraper.fetchPuzzleDescription(3)).thenReturn("This is the puzzle description");
+        when(scraper.fetchPuzzleInput(3)).thenReturn("7 6 4 2 1\n" +
+                "1 2 7 8 9\n" +
+                "9 7 6 2 1\n" +
+                "1 3 2 4 5\n" +
+                "8 6 4 4 1\n" +
+                "1 3 6 7 9");
+
+        Day day = dayProcess.solveDay2Part2(2,2);
+        assertEquals( "4", day.getAnswer());
+    }
 }
