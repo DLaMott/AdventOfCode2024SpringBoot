@@ -1,12 +1,8 @@
 package com.advent.AdventOfCode.helper;
 
-
-
-import com.advent.AdventOfCode.AdventOfCodeApplication;
 import org.apache.commons.lang3.tuple.Pair;
 import com.advent.AdventOfCode.model.Day;
 import com.advent.AdventOfCode.util.Scraper;
-import org.apache.coyote.http11.filters.SavedRequestInputFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +52,6 @@ public class DayProcess {
         }
     }
 
-
-
-
     public ResponseEntity<Day> solveDayPart(int day, int part) {
         Pair<Integer, Integer> dayPart = Pair.of(day, part);
         Function<Pair<Integer, Integer>, Day> solver = solvers.get(dayPart);
@@ -76,7 +69,7 @@ public class DayProcess {
         }
     }
 
-    private Day solveDay1Part1(Integer day, Integer part) {
+    public Day solveDay1Part1(Integer day, Integer part) {
         try {
             String puzzleText = scraper.fetchPuzzleDescription(day);
             String puzzleInput = scraper.fetchPuzzleInput(day);
@@ -110,11 +103,10 @@ public class DayProcess {
         }
     }
 
-    private Day solveDay1Part2(Integer day, Integer part) {
+    public Day solveDay1Part2(Integer day, Integer part) {
         try {
             String puzzleText = scraper.fetchPuzzleDescription(day);
             String puzzleInput = scraper.fetchPuzzleInput(day);
-
 
             int[][] sortedPairs = Arrays.stream(puzzleInput.split("\n"))
                     .map(line -> line.split(" ", 2))
@@ -131,8 +123,6 @@ public class DayProcess {
                     .mapToInt(pair -> pair[1])
                     .sorted()
                     .toArray();
-
-
 
             //store each in their own map with freq. Then mult the amount
 
@@ -161,7 +151,6 @@ public class DayProcess {
 
             }
 
-
             String puzzleAnswer = String.valueOf(sum);
 
             return new Day(puzzleText, puzzleInput, puzzleAnswer);
@@ -169,7 +158,6 @@ public class DayProcess {
             return new Day("Error fetching Day 2", e.getMessage(), "N/A");
         }
     }
-
 
     /**
      *
@@ -184,7 +172,7 @@ public class DayProcess {
      * @param part
      * @return
      */
-    private Day solveDay2Part1(Integer day, Integer part) {
+    public Day solveDay2Part1(Integer day, Integer part) {
         try {
             String puzzleText = scraper.fetchPuzzleDescription(day);
             String puzzleInput = scraper.fetchPuzzleInput(day);
@@ -238,7 +226,7 @@ public class DayProcess {
      * @param part
      * @return
      */
-    private Day solveDay2Part2(Integer day, Integer part) {
+    public Day solveDay2Part2(Integer day, Integer part) {
         try {
             String puzzleText = scraper.fetchPuzzleDescription(day);
             String puzzleInput = scraper.fetchPuzzleInput(day);
@@ -315,7 +303,6 @@ public class DayProcess {
         }
         return result;
     }
-
 
     private Day solveGenericDayPart(Integer day, Integer part) {
         return new Day("Generic Puzzle Text for Day " + day + ", Part " + part,
