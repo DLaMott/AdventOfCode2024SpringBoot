@@ -104,4 +104,42 @@ public class DayProcessTest {
         Day day = dayProcess.solveDay3Part2(3,2);
         assertEquals( "48", day.getAnswer());
     }
+
+    @Test
+    void Day4Part1Test() throws IOException, InterruptedException {
+
+        when(scraper.fetchPuzzleDescription(4)).thenReturn("This is the puzzle description");
+        when(scraper.fetchPuzzleInput(4)).thenReturn("MMMSXXMASM\n" +
+                "MSAMXMSMSA\n" +
+                "AMXSXMAAMM\n" +
+                "MSAMASMSMX\n" +
+                "XMASAMXAMM\n" +
+                "XXAMMXXAMA\n" +
+                "SMSMSASXSS\n" +
+                "SAXAMASAAA\n" +
+                "MAMMMXMMMM\n" +
+                "MXMXAXMASX");
+
+        Day day = dayProcess.solveDay4Part1(4,1);
+        assertEquals( "18", day.getAnswer());
+    }
+
+    @Test
+    void Day4Part2Test() throws IOException, InterruptedException {
+
+        when(scraper.fetchPuzzleDescription(4)).thenReturn("This is the puzzle description");
+        when(scraper.fetchPuzzleInput(4)).thenReturn(".M.S......\n" +
+                "..A..MSMS.\n" +
+                ".M.S.MAA..\n" +
+                "..A.ASMSM.\n" +
+                ".M.S.M....\n" +
+                "..........\n" +
+                "S.S.S.S.S.\n" +
+                ".A.A.A.A..\n" +
+                "M.M.M.M.M.\n" +
+                "..........");
+
+        Day day = dayProcess.solveDay4Part2(4,2);
+        assertEquals( "9", day.getAnswer());
+    }
 }

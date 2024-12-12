@@ -126,24 +126,24 @@ public class DayProcess {
                     .toArray();
 
             Map<Integer, Integer> left = new HashMap<>();
-            Map<Integer,Integer> right = new HashMap<>();
+            Map<Integer, Integer> right = new HashMap<>();
 
-            for(Integer i: sortedOne){
+            for (Integer i : sortedOne) {
 
-                left.put(i, left.getOrDefault(i,0) + 1);
+                left.put(i, left.getOrDefault(i, 0) + 1);
 
             }
 
-            for(Integer i: sortedTwo){
+            for (Integer i : sortedTwo) {
 
-                right.put(i, right.getOrDefault(i,0) + 1);
+                right.put(i, right.getOrDefault(i, 0) + 1);
 
             }
 
             int sum = 0;
 
-            for(Map.Entry<Integer, Integer> map: left.entrySet()){
-                if (right.containsKey(map.getKey())){
+            for (Map.Entry<Integer, Integer> map : left.entrySet()) {
+                if (right.containsKey(map.getKey())) {
                     sum += map.getKey() * right.get(map.getKey());
                 }
 
@@ -158,14 +158,14 @@ public class DayProcess {
     }
 
     /**
-     *
-     *90 91 93 96 93
-     *3 5 7 10 11 11
-     *35 37 39 42 46
-     *
+     * 90 91 93 96 93
+     * 3 5 7 10 11 11
+     * 35 37 39 42 46
+     * <p>
      * return a sum of safe lists
      * any two adjacent levels can differ by one or three
      * list can either always increase or decrease
+     *
      * @param day
      * @param part
      * @return
@@ -177,7 +177,7 @@ public class DayProcess {
 
             List<int[]> lists = Arrays.stream(puzzleInput.split("\n"))
                     .map(list -> Arrays.stream(list.split(" "))
-                    .mapToInt(Integer::parseInt).toArray())
+                            .mapToInt(Integer::parseInt).toArray())
                     .toList();
 
             int sum = 0;
@@ -212,14 +212,14 @@ public class DayProcess {
     }
 
     /**
-     *
-     *90 91 93 96 93
-     *3 5 7 10 11 11
-     *35 37 39 42 46
-     *
+     * 90 91 93 96 93
+     * 3 5 7 10 11 11
+     * 35 37 39 42 46
+     * <p>
      * return a sum of safe lists
      * any two adjacent levels can differ by one or three
      * list can either always increase or decrease
+     *
      * @param day
      * @param part
      * @return
@@ -267,6 +267,7 @@ public class DayProcess {
 
     /**
      * Accepts reports
+     *
      * @param reports elf reports?
      * @return if report is safe
      */
@@ -288,6 +289,7 @@ public class DayProcess {
 
     /**
      * Removes an item from an array by an index.
+     *
      * @param array the report
      * @param index the index
      * @return an array without the specified index
@@ -313,7 +315,7 @@ public class DayProcess {
 
             int sum = 0;
 
-            while (matcher.find()){
+            while (matcher.find()) {
                 int x = Integer.parseInt(matcher.group(1));
                 int y = Integer.parseInt(matcher.group(2));
 
@@ -322,7 +324,7 @@ public class DayProcess {
 
             return new Day(puzzleText, puzzleInput, String.valueOf(sum));
         } catch (IOException | InterruptedException e) {
-            return new Day("Error fetching Day 2", e.getMessage(), "N/A");
+            return new Day("Error fetching Day 3", e.getMessage(), "N/A");
         }
     }
 
@@ -360,9 +362,136 @@ public class DayProcess {
             }
 
             return new Day(puzzleText, puzzleInput, String.valueOf(sum));
-        } catch (IOException | InterruptedException ex) {
-            throw new RuntimeException(ex);
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 3", e.getMessage(), "N/A");
         }
+    }
+
+    public Day solveDay4Part1(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+            String word = "XMAS";
+            int sum = 0;
+
+            // Setup a grid
+            String[] rows = puzzleInput.split("\n");
+            int numRows = rows.length;
+            int numCols = rows[0].length();
+            char[][] grid = new char[numRows][numCols];
+
+            for (int i = 0; i < numRows; i++) {
+                grid[i] = rows[i].toCharArray();
+            }
+
+            // set up all directions
+            int[][] directions = {
+                    {0, 1}, //right
+                    {1, 0}, //down
+                    {0, -1}, //left
+                    {-1, 0}, //up
+                    {1, 1}, //downRight
+                    {-1, -1},//upLeft
+                    {1, -1},//downLeft
+                    {-1, 1},//upRight
+            };
+
+            int gridRows = grid.length;
+            int gridCols = grid[0].length;
+
+            for (int x = 0; x < gridRows; x++) {
+                for (int i = 0; i < gridCols; i++) {
+                    for (int[] dir : directions) {
+                        if (canFormWord(grid, word, x, i, dir[0], dir[1])) {
+                            sum++;
+                        }
+                    }
+                }
+            }
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 4", e.getMessage(), "N/A");
+        }
+    }
+
+
+    private boolean canFormWord(char[][] grid, String word, int startrow, int startcol, int x, int y){
+        int row = startrow;
+        int col = startcol;
+        int rows = grid.length;
+        int cols = grid[0].length;
+
+        for(int i = 0; i <word.length(); i++){
+            if(row < 0 || row >= rows || col < 0 || col >= cols || grid[row][col] != word.charAt(i)){
+                return false;
+            }
+            row += x;
+            col += y;
+        }
+
+        return true;
+    }
+
+    public Day solveDay4Part2(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+            String pattern = "MAS";
+            int sum = 0;
+
+            // Setup a grid
+            String[] rows = puzzleInput.split("\n");
+            int numRows = rows.length;
+            int numCols = rows[0].length();
+            char[][] grid = new char[numRows][numCols];
+
+            for (int i = 0; i < numRows; i++) {
+                grid[i] = rows[i].toCharArray();
+            }
+
+            // Iterate through the grid to find X-MAS patterns
+            for (int row = 0; row < numRows; row++) {
+                for (int col = 0; col < numCols; col++) {
+                    if (isXMas(grid, row, col, pattern)) {
+                        sum++;
+                    }
+                }
+            }
+
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 4", e.getMessage(), "N/A");
+        }
+    }
+
+    private boolean isXMas(char[][] grid, int startRow, int startCol, String pattern) {
+        int len = pattern.length();
+
+        // Check for the top-left to bottom-right "MAS" (forward or backward)
+        boolean downRight = matchesPattern(grid, startRow, startCol, pattern, 1, 1) ||
+                matchesPattern(grid, startRow, startCol, new StringBuilder(pattern).reverse().toString(), 1, 1);
+
+        // Check for the bottom-left to top-right "MAS" (forward or backward)
+        boolean upRight = matchesPattern(grid, startRow + len - 1, startCol, pattern, -1, 1) ||
+                matchesPattern(grid, startRow + len - 1, startCol, new StringBuilder(pattern).reverse().toString(), -1, 1);
+
+        return downRight && upRight;
+    }
+
+    private boolean matchesPattern(char[][] grid, int startRow, int startCol, String pattern, int rowStep, int colStep) {
+        int numRows = grid.length;
+        int numCols = grid[0].length;
+        int len = pattern.length();
+
+        for (int i = 0; i < len; i++) {
+            int row = startRow + i * rowStep;
+            int col = startCol + i * colStep;
+
+            if (row < 0 || row >= numRows || col < 0 || col >= numCols || grid[row][col] != pattern.charAt(i)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Day solveGenericDayPart(Integer day, Integer part) {
