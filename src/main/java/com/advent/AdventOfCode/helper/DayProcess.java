@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class DayProcess {
@@ -304,7 +306,21 @@ public class DayProcess {
         try {
             String puzzleText = scraper.fetchPuzzleDescription(day);
             String puzzleInput = scraper.fetchPuzzleInput(day);
-            return new Day(puzzleText, puzzleInput, "");
+
+            Pattern pattern = Pattern.compile("mul\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+
+            Matcher matcher = pattern.matcher(puzzleInput);
+
+            int sum = 0;
+
+            while (matcher.find()){
+                int x = Integer.parseInt(matcher.group(1));
+                int y = Integer.parseInt(matcher.group(2));
+
+                sum += x * y;
+            }
+
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
         } catch (IOException | InterruptedException e) {
             return new Day("Error fetching Day 2", e.getMessage(), "N/A");
         }
@@ -314,9 +330,38 @@ public class DayProcess {
         try {
             String puzzleText = scraper.fetchPuzzleDescription(day);
             String puzzleInput = scraper.fetchPuzzleInput(day);
-            return new Day(puzzleText, puzzleInput,"");
-        } catch (IOException | InterruptedException e) {
-            return new Day("Error fetching Day 2", e.getMessage(), "N/A");
+
+            Pattern mulPattern = Pattern.compile("mul\\s*\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+            // Regular expression to capture do() and don't() instructions
+            Pattern controlPattern = Pattern.compile("do\\(\\)|don't\\(\\)");
+
+            Matcher matcher = Pattern.compile(controlPattern.pattern() + "|" + mulPattern.pattern()).matcher(puzzleInput);
+
+            boolean isEnabled = true; // mul instructions start as enabled
+            int sum = 0;
+
+            while (matcher.find()) {
+                String match = matcher.group();
+
+                if (match.equals("do()")) {
+                    isEnabled = true;
+                } else if (match.equals("don't()")) {
+                    isEnabled = false;
+                } else if (match.startsWith("mul")) {
+                    if (isEnabled) {
+                        Matcher mulMatcher = mulPattern.matcher(match);
+                        if (mulMatcher.matches()) {
+                            int x = Integer.parseInt(mulMatcher.group(1));
+                            int y = Integer.parseInt(mulMatcher.group(2));
+                            sum += x * y;
+                        }
+                    }
+                }
+            }
+
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
+        } catch (IOException | InterruptedException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
