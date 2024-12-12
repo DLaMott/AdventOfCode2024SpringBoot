@@ -494,6 +494,32 @@ public class DayProcess {
         return true;
     }
 
+    public Day solveDay5Part1(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+            int sum = 0;
+
+
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 3", e.getMessage(), "N/A");
+        }
+    }
+
+    public Day solveDay5Part2(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+            int sum = 0;
+
+
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 3", e.getMessage(), "N/A");
+        }
+    }
+
     private Day solveGenericDayPart(Integer day, Integer part) {
         return new Day("Generic Puzzle Text for Day " + day + ", Part " + part,
                 "Generic Input",
