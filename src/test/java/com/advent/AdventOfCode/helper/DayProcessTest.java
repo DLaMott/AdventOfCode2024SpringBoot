@@ -147,37 +147,73 @@ public class DayProcessTest {
     void Day5Part1Test() throws IOException, InterruptedException {
 
         when(scraper.fetchPuzzleDescription(5)).thenReturn("This is the puzzle description");
-        when(scraper.fetchPuzzleInput(5)).thenReturn(".M.S......\n" +
-                "..A..MSMS.\n" +
-                ".M.S.MAA..\n" +
-                "..A.ASMSM.\n" +
-                ".M.S.M....\n" +
-                "..........\n" +
-                "S.S.S.S.S.\n" +
-                ".A.A.A.A..\n" +
-                "M.M.M.M.M.\n" +
-                "..........");
+        when(scraper.fetchPuzzleInput(5)).thenReturn("47|53\n" +
+                "97|13\n" +
+                "97|61\n" +
+                "97|47\n" +
+                "75|29\n" +
+                "61|13\n" +
+                "75|53\n" +
+                "29|13\n" +
+                "97|29\n" +
+                "53|29\n" +
+                "61|53\n" +
+                "97|53\n" +
+                "61|29\n" +
+                "47|13\n" +
+                "75|47\n" +
+                "97|75\n" +
+                "47|61\n" +
+                "75|61\n" +
+                "47|29\n" +
+                "75|13\n" +
+                "53|13\n" +
+                "\n" +
+                "75,47,61,53,29\n" +
+                "97,61,53,29,13\n" +
+                "75,29,13\n" +
+                "75,97,47,61,53\n" +
+                "61,13,29\n" +
+                "97,13,75,29,47");
 
         Day day = dayProcess.solveDay5Part1(5,1);
-        assertEquals( "9", day.getAnswer());
+        assertEquals( "143", day.getAnswer());
     }
 
     @Test
     void Day5Part2Test() throws IOException, InterruptedException {
 
         when(scraper.fetchPuzzleDescription(5)).thenReturn("This is the puzzle description");
-        when(scraper.fetchPuzzleInput(5)).thenReturn(".M.S......\n" +
-                "..A..MSMS.\n" +
-                ".M.S.MAA..\n" +
-                "..A.ASMSM.\n" +
-                ".M.S.M....\n" +
-                "..........\n" +
-                "S.S.S.S.S.\n" +
-                ".A.A.A.A..\n" +
-                "M.M.M.M.M.\n" +
-                "..........");
+        when(scraper.fetchPuzzleInput(5)).thenReturn("47|53\n" +
+                "97|13\n" +
+                "97|61\n" +
+                "97|47\n" +
+                "75|29\n" +
+                "61|13\n" +
+                "75|53\n" +
+                "29|13\n" +
+                "97|29\n" +
+                "53|29\n" +
+                "61|53\n" +
+                "97|53\n" +
+                "61|29\n" +
+                "47|13\n" +
+                "75|47\n" +
+                "97|75\n" +
+                "47|61\n" +
+                "75|61\n" +
+                "47|29\n" +
+                "75|13\n" +
+                "53|13\n" +
+                "\n" +
+                "75,47,61,53,29\n" +
+                "97,61,53,29,13\n" +
+                "75,29,13\n" +
+                "75,97,47,61,53\n" +
+                "61,13,29\n" +
+                "97,13,75,29,47");
 
         Day day = dayProcess.solveDay5Part2(5,2);
-        assertEquals( "9", day.getAnswer());
+        assertEquals( "123", day.getAnswer());
     }
 }

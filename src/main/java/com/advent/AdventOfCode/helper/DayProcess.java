@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -498,7 +495,95 @@ public class DayProcess {
         try {
             String puzzleText = scraper.fetchPuzzleDescription(day);
             String puzzleInput = scraper.fetchPuzzleInput(day);
-            int sum = 0;
+
+            String[] sections = puzzleInput.split("\\n\\n");
+            String[] rules = sections[0].split("\\n");
+            String[] updates = sections[1].split("\\n");
+
+            int sum = findMiddleSum(rules, updates);
+
+            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
+        } catch (IOException | InterruptedException e) {
+            return new Day("Error fetching Day 3", e.getMessage(), "N/A");
+        }
+    }
+
+    public static int findMiddleSum(String[] rules, String[] updates) {
+        int totalMiddleSum = 0;
+
+        // Process each update
+        for (String update : updates) {
+            List<Integer> updateList = parseUpdate(update);
+            List<int[]> filteredRules = filterRules(rules, updateList);
+
+            if (isValidUpdate(updateList, filteredRules)) {
+                int middleIndex = updateList.size() / 2;
+                totalMiddleSum += updateList.get(middleIndex);
+            }
+        }
+
+        return totalMiddleSum;
+    }
+
+    public static List<Integer> parseUpdate(String update) {
+        String[] parts = update.split(",");
+        List<Integer> updateList = new ArrayList<>();
+
+        for (String part : parts) {
+            updateList.add(Integer.parseInt(part));
+        }
+
+        return updateList;
+    }
+
+    public static List<int[]> filterRules(String[] rules, List<Integer> updateList) {
+        Set<Integer> updateSet = new HashSet<>(updateList);
+        List<int[]> filteredRules = new ArrayList<>();
+
+        for (String rule : rules) {
+            String[] parts = rule.split("\\|");
+            int x = Integer.parseInt(parts[0]);
+            int y = Integer.parseInt(parts[1]);
+
+            // Only include rules where both pages exist in the update
+            if (updateSet.contains(x) && updateSet.contains(y)) {
+                filteredRules.add(new int[]{x, y});
+            }
+        }
+
+        return filteredRules;
+    }
+
+    public static boolean isValidUpdate(List<Integer> update, List<int[]> rules) {
+        // Map page to its index in the update list
+        Map<Integer, Integer> pageIndex = new HashMap<>();
+        for (int i = 0; i < update.size(); i++) {
+            pageIndex.put(update.get(i), i);
+        }
+
+        // Check all rules for validity
+        for (int[] rule : rules) {
+            int x = rule[0];
+            int y = rule[1];
+
+            // If x must come before y, check their indices
+            if (pageIndex.get(x) > pageIndex.get(y)) {
+                return false; // Rule violated
+            }
+        }
+
+        return true;
+    }
+    public Day solveDay5Part2(Integer day, Integer part) {
+        try {
+            String puzzleText = scraper.fetchPuzzleDescription(day);
+            String puzzleInput = scraper.fetchPuzzleInput(day);
+
+            String[] sections = puzzleInput.split("\\n\\n");
+            String[] rules = sections[0].split("\\n");
+            String[] updates = sections[1].split("\\n");
+
+            int sum = findReorderedMiddleSum(rules, updates);
 
 
             return new Day(puzzleText, puzzleInput, String.valueOf(sum));
@@ -507,17 +592,64 @@ public class DayProcess {
         }
     }
 
-    public Day solveDay5Part2(Integer day, Integer part) {
-        try {
-            String puzzleText = scraper.fetchPuzzleDescription(day);
-            String puzzleInput = scraper.fetchPuzzleInput(day);
-            int sum = 0;
+    public static int findReorderedMiddleSum(String[] rules, String[] updates) {
+        int totalMiddleSum = 0;
 
+        // Process each update
+        for (String update : updates) {
+            List<Integer> updateList = parseUpdate(update);
+            List<int[]> filteredRules = filterRules(rules, updateList);
 
-            return new Day(puzzleText, puzzleInput, String.valueOf(sum));
-        } catch (IOException | InterruptedException e) {
-            return new Day("Error fetching Day 3", e.getMessage(), "N/A");
+            if (!isValidUpdate(updateList, filteredRules)) {
+                // Reorder the update correctly
+                updateList = reorderUpdate(updateList, filteredRules);
+                int middleIndex = updateList.size() / 2;
+                totalMiddleSum += updateList.get(middleIndex);
+            }
         }
+
+        return totalMiddleSum;
+    }
+
+    public static List<Integer> reorderUpdate(List<Integer> update, List<int[]> rules) {
+        // Create a graph and indegree map for the update
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+        Map<Integer, Integer> indegree = new HashMap<>();
+
+        for (int page : update) {
+            graph.put(page, new ArrayList<>());
+            indegree.put(page, 0);
+        }
+
+        for (int[] rule : rules) {
+            int x = rule[0];
+            int y = rule[1];
+            graph.get(x).add(y);
+            indegree.put(y, indegree.get(y) + 1);
+        }
+
+        // Perform topological sort
+        Queue<Integer> queue = new LinkedList<>();
+        for (int page : update) {
+            if (indegree.get(page) == 0) {
+                queue.add(page);
+            }
+        }
+
+        List<Integer> sortedOrder = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            sortedOrder.add(current);
+
+            for (int neighbor : graph.get(current)) {
+                indegree.put(neighbor, indegree.get(neighbor) - 1);
+                if (indegree.get(neighbor) == 0) {
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        return sortedOrder;
     }
 
     private Day solveGenericDayPart(Integer day, Integer part) {
