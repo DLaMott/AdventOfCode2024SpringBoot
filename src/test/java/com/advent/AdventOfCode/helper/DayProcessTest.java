@@ -216,4 +216,24 @@ public class DayProcessTest {
         Day day = dayProcess.solveDay5Part2(5,2);
         assertEquals( "123", day.getAnswer());
     }
+
+    @Test
+    void Day69Part1Test() throws IOException, InterruptedException {
+
+        when(scraper.fetchPuzzleDescription(6)).thenReturn("This is the puzzle description");
+        when(scraper.fetchPuzzleInput(6)).thenReturn("");
+
+        Day day = dayProcess.solveDay5Part2(6,1);
+        assertEquals( "123", day.getAnswer());
+    }
+
+    @Test
+    void Day6Part1Test() throws IOException, InterruptedException {
+
+        when(scraper.fetchPuzzleDescription(6)).thenReturn("This is the puzzle description");
+        when(scraper.fetchPuzzleInput(6)).thenReturn("");
+
+        Day day = dayProcess.solveDay5Part2(6,2);
+        assertEquals( "123", day.getAnswer());
+    }
 }
